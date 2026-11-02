@@ -15,6 +15,11 @@ NC='\033[0m' # No Color
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
+# 自动激活已有的本地虚拟环境
+if [ -d "$SCRIPT_DIR/.venv" ]; then
+    source "$SCRIPT_DIR/.venv/bin/activate"
+fi
+
 echo -e "${GREEN}========================================${NC}"
 echo -e "${GREEN}闲鱼监控系统 - 本地启动脚本${NC}"
 echo -e "${GREEN}========================================${NC}"

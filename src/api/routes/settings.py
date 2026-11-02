@@ -347,3 +347,54 @@ async def test_ai_settings(settings: dict):
             "success": False,
             "message": f"AI模型连接测试失败: {exc}",
         }
+
+
+class SecuritySettingsResponse(BaseModel):
+    username: str
+    is_default_password: bool
+
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+    confirm_password: Optional[str] = None
+    username: Optional[str] = None
+
+
+@router.get("/security", response_model=SecuritySettingsResponse)
+async def get_security_settings():
+    from src.infrastructure.config.settings import get_settings
+    current_settings = get_settings()
+    current_password = env_manager.get_value("WEB_PASSWORD", current_settings.web_password)
+    return {
+        "username": current_settings.web_username,
+        "is_default_password": current_password == "admin123",
+    }
+
+
+@router.put("/security")
+@router.put("/password")
+async def update_security_settings(payload: ChangePasswordRequest):
+    from src.infrastructure.config.settings import get_settings
+    current_settings = get_settings()
+    stored_password = env_manager.get_value("WEB_PASSWORD", current_settings.web_password)
+
+    if payload.current_password != stored_password:
+        raise HTTPException(status_code=400, detail="当前密码不正确")
+
+    if not payload.new_password or len(payload.new_password.strip()) < 4:
+        raise HTTPException(status_code=400, detail="新密码长度不能少于4位")
+
+    if payload.confirm_password is not None and payload.new_password != payload.confirm_password:
+        raise HTTPException(status_code=400, detail="两次输入的新密码不一致")
+
+    updates = {"WEB_PASSWORD": payload.new_password}
+    if payload.username and payload.username.strip():
+        updates["WEB_USERNAME"] = payload.username.strip()
+
+    if not env_manager.update_values(updates):
+        raise HTTPException(status_code=500, detail="更新密码失败，无法写入配置文件")
+
+    _reload_env()
+    return {"success": True, "message": "密码修改成功，请牢记新密码"}
+

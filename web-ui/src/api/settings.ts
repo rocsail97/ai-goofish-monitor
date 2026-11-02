@@ -176,3 +176,28 @@ export async function updateLoginState(content: string): Promise<{ message: stri
 export async function deleteLoginState(): Promise<{ message: string }> {
   return await http('/api/login-state', { method: 'DELETE' })
 }
+
+export interface SecuritySettings {
+  username: string
+  is_default_password: boolean
+}
+
+export interface ChangePasswordPayload {
+  current_password: string
+  new_password: string
+  confirm_password?: string
+  username?: string
+}
+
+export async function getSecuritySettings(): Promise<SecuritySettings> {
+  return await http('/api/settings/security')
+}
+
+export async function updatePassword(payload: ChangePasswordPayload): Promise<{ success: boolean; message: string }> {
+  return await http('/api/settings/security', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+}
+

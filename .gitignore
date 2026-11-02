@@ -15,3 +15,7 @@ prompts/
 .serena/
 price_history/
 data/
+.venv/
+node_modules/
+web-ui/node_modules/
+.pytest_cache/

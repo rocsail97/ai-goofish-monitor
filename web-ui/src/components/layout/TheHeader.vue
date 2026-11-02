@@ -10,7 +10,8 @@ import {
   Search, 
   UserCircle,
   HelpCircle,
-  Menu
+  Menu,
+  KeyRound
 } from 'lucide-vue-next'
 import Badge from '@/components/ui/badge/Badge.vue'
 import { useMobileNav } from '@/composables/useMobileNav'
@@ -34,6 +35,10 @@ function goNotifications() {
 
 function goPrompts() {
   router.push({ name: 'Settings', query: { tab: 'prompts' } })
+}
+
+function goSecurity() {
+  router.push({ name: 'Settings', query: { tab: 'security' } })
 }
 </script>
 
@@ -99,6 +104,15 @@ function goPrompts() {
            @click="goPrompts"
          >
             <HelpCircle class="w-5 h-5" />
+         </Button>
+         <Button
+           variant="ghost"
+           size="icon"
+           class="rounded-full text-slate-500 hover:text-primary hover:bg-primary/10"
+           title="修改密码"
+           @click="goSecurity"
+         >
+            <KeyRound class="w-5 h-5" />
          </Button>
       </div>
       

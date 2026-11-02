@@ -144,7 +144,9 @@ class LoginRequest(BaseModel):
 @app.post("/auth/status")
 async def auth_status(payload: LoginRequest):
     """检查认证状态"""
-    if payload.username == app_settings.web_username and payload.password == app_settings.web_password:
+    from src.infrastructure.config.settings import get_settings
+    current_settings = get_settings()
+    if payload.username == current_settings.web_username and payload.password == current_settings.web_password:
         return {"authenticated": True, "username": payload.username}
     raise HTTPException(status_code=401, detail="认证失败")
 

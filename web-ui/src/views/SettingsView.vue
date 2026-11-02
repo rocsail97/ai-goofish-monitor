@@ -15,6 +15,7 @@ import { toast } from '@/components/ui/toast'
 import { getPromptContent, listPrompts, updatePrompt } from '@/api/prompts'
 import NotificationSettingsPanel from '@/components/settings/NotificationSettingsPanel.vue'
 import RotationSettingsPanel from '@/components/settings/RotationSettingsPanel.vue'
+import SecuritySettingsPanel from '@/components/settings/SecuritySettingsPanel.vue'
 const { t } = useI18n()
 
 const {
@@ -36,7 +37,7 @@ const {
 
 const activeTab = ref('ai')
 const route = useRoute()
-const validTabs = new Set(['notifications', 'ai', 'rotation', 'status', 'prompts'])
+const validTabs = new Set(['notifications', 'ai', 'rotation', 'status', 'prompts', 'security'])
 
 const promptFiles = ref<string[]>([])
 const selectedPrompt = ref<string | null>(null)
@@ -193,6 +194,7 @@ watch(selectedPrompt, async (value) => {
         <TabsTrigger class="shrink-0" value="notifications">{{ t('settings.tabs.notifications') }}</TabsTrigger>
         <TabsTrigger class="shrink-0" value="status">{{ t('settings.tabs.status') }}</TabsTrigger>
         <TabsTrigger class="shrink-0" value="prompts">{{ t('settings.tabs.prompts') }}</TabsTrigger>
+        <TabsTrigger class="shrink-0" value="security">{{ t('settings.tabs.security') }}</TabsTrigger>
       </TabsList>
 
       <!-- AI Tab -->
@@ -371,6 +373,11 @@ watch(selectedPrompt, async (value) => {
             </Button>
           </CardFooter>
         </Card>
+      </TabsContent>
+
+      <!-- Security / Change Password Tab -->
+      <TabsContent value="security">
+        <SecuritySettingsPanel />
       </TabsContent>
     </Tabs>
   </div>
